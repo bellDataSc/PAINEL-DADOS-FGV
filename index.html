@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise CAGED - CBO 212415</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Análise CAGED - CBO 212415: Analista de Sistemas de Automação</h1>
+            <div class="header-info">
+                <span class="status status--info">Período: 2024</span>
+                <span class="status status--success">Salário Mínimo: R$ 1.412,00</span>
+                <span class="status status--warning">Fonte: CAGED/MTE</span>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="parte1">Parte 1 - Análise Salarial (R)</button>
+            <button class="nav-tab" data-tab="parte2">Parte 2 - Variação Percentual (R)</button>
+            <button class="nav-tab" data-tab="parte3">Parte 3 - Contagem de Registros (Python)</button>
+            <button class="nav-tab" data-tab="metodologia">Metodologia</button>
+            <button class="nav-tab" data-tab="resumo">Resumo Executivo</button>
+        </nav>
+
+        <!-- Parte 1 -->
+        <section id="parte1" class="tab-content active">
+            <div class="section-header">
+                <h2>Parte 1 - Análise Salarial Mensal (R)</h2>
+                <p>Valor médio dos salários maiores ou iguais ao salário mínimo para CBO 212415</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Salários Médios Mensais</h3>
+                        <canvas id="chart1" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Estatísticas</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Maior Salário Médio</span>
+                                <span class="stat-value" id="max-salary">R$ 5.115,45</span>
+                                <small>Jul/2024</small>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Menor Salário Médio</span>
+                                <span class="stat-value" id="min-salary">R$ 4.180,30</span>
+                                <small>Fev/2024</small>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Média Anual</span>
+                                <span class="stat-value" id="avg-salary">R$ 4.587,27</span>
+                                <small>2024</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3>Tabela de Resultados</h3>
+                    <div class="table-container">
+                        <table id="table1" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Competência</th>
+                                    <th>Mês/Ano</th>
+                                    <th>Qtd. Registros</th>
+                                    <th>Valor Médio</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table1-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__header">
+                    <h3>Código R Utilizado</h3>
+                    <button class="btn btn--secondary btn--sm" onclick="toggleCode('code1')">Mostrar/Ocultar</button>
+                </div>
+                <div class="card__body">
+                    <pre id="code1" class="code-block hidden"><code># PARTE 1 - ANÁLISE SALARIAL (R)
+library(dplyr)
+library(ggplot2)
+
+# Carregar dados
+dados <- read_excel('DADOS.xlsx')
+salario_minimo <- 1412.00
+
+# Filtrar e calcular médias
+resultado <- dados %>%
+  filter(cd_cbo_ocup == 212415, vl_sal_mes >= salario_minimo) %>%
+  group_by(nr_comp_movim) %>%
+  summarise(valor_medio = mean(vl_sal_mes)) %>%
+  arrange(nr_comp_movim)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Parte 2 -->
+        <section id="parte2" class="tab-content">
+            <div class="section-header">
+                <h2>Parte 2 - Variação Percentual Mensal (R)</h2>
+                <p>Análise das variações percentuais mensais dos salários médios</p>
+            </div>
+
+            <div class="highlight-card">
+                <h3>🎯 Resultado Principal</h3>
+                <p><strong>Maior Variação:</strong> <span class="highlight-value">+15,71%</span></p>
+                <p><strong>Ocorreu em:</strong> <span class="highlight-month">Julho/2024</span></p>
+                <p><strong>De:</strong> R$ 4.420,90 → <strong>Para:</strong> R$ 5.115,45</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Evolução das Variações</h3>
+                        <canvas id="chart2" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Variações por Mês</h3>
+                        <canvas id="chart2-bars" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3>Tabela de Variações</h3>
+                    <div class="table-container">
+                        <table id="table2" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Mês/Ano</th>
+                                    <th>Valor Médio</th>
+                                    <th>Variação %</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table2-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__header">
+                    <h3>Código R Utilizado</h3>
+                    <button class="btn btn--secondary btn--sm" onclick="toggleCode('code2')">Mostrar/Ocultar</button>
+                </div>
+                <div class="card__body">
+                    <pre id="code2" class="code-block hidden"><code># PARTE 2 - VARIAÇÃO PERCENTUAL (R)
+resultado_parte2 <- resultado %>%
+  mutate(
+    valor_anterior = lag(valor_medio, 1),
+    variacao_percentual = ((valor_medio - valor_anterior) / valor_anterior) * 100
+  )
+
+# Encontrar maior variação
+maior_variacao <- resultado_parte2 %>%
+  filter(!is.na(variacao_percentual)) %>%
+  arrange(desc(abs(variacao_percentual))) %>%
+  slice(1)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Parte 3 -->
+        <section id="parte3" class="tab-content">
+            <div class="section-header">
+                <h2>Parte 3 - Contagem de Registros (Python)</h2>
+                <p>Quantidade de registros no mês de maior variação percentual</p>
+            </div>
+
+            <div class="highlight-card">
+                <h3>🐍 Resultado Python</h3>
+                <p><strong>Registros em Jul/2024:</strong> <span class="highlight-value">220 registros</span></p>
+                <p><strong>Acima do salário mínimo:</strong> <span class="highlight-value">195 registros (88,6%)</span></p>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Distribuição Salarial - Jul/2024</h3>
+                        <canvas id="chart3" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Análise Complementar</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Total de Registros</span>
+                                <span class="stat-value">220</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Acima Sal. Mínimo</span>
+                                <span class="stat-value">195</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Abaixo Sal. Mínimo</span>
+                                <span class="stat-value">25</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Percentual Adequado</span>
+                                <span class="stat-value">88,6%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__header">
+                    <h3>Código Python Utilizado</h3>
+                    <button class="btn btn--secondary btn--sm" onclick="toggleCode('code3')">Mostrar/Ocultar</button>
+                </div>
+                <div class="card__body">
+                    <pre id="code3" class="code-block hidden"><code># PARTE 3 - CONTAGEM (Python)
+import pandas as pd
+
+# Carregar dados
+dados = pd.read_excel('DADOS.xlsx')
+mes_maior_variacao = 202407
+
+# Filtrar e contar
+registros = dados[
+  (dados['cd_cbo_ocup'] == 212415) & 
+  (dados['nr_comp_movim'] == mes_maior_variacao)
+]
+
+total_registros = len(registros)
+print(f'Registros encontrados: {total_registros}')</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metodologia -->
+        <section id="metodologia" class="tab-content">
+            <div class="section-header">
+                <h2>Metodologia de Análise</h2>
+                <p>Detalhamento dos métodos e critérios utilizados na análise</p>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3>📊 Fonte dos Dados</h3>
+                    <ul>
+                        <li><strong>Base:</strong> CAGED (Cadastro Geral de Empregados e Desempregados)</li>
+                        <li><strong>Origem:</strong> Ministério do Trabalho e Emprego (MTE)</li>
+                        <li><strong>Período:</strong> Janeiro a Dezembro de 2024</li>
+                        <li><strong>CBO Analisado:</strong> 212415 - Analista de Sistemas de Automação</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3>🔍 Critérios de Análise</h3>
+                    <div class="methodology-steps">
+                        <div class="step">
+                            <h4>Parte 1 - Filtros Aplicados</h4>
+                            <ul>
+                                <li>CBO específico: 212415</li>
+                                <li>Salários ≥ R$ 1.412,00 (salário mínimo 2024)</li>
+                                <li>Cálculo da média mensal por competência</li>
+                            </ul>
+                        </div>
+                        <div class="step">
+                            <h4>Parte 2 - Fórmula de Variação</h4>
+                            <p><code>Variação % = ((Valor Atual - Valor Anterior) / Valor Anterior) × 100</code></p>
+                        </div>
+                        <div class="step">
+                            <h4>Parte 3 - Contagem Direta</h4>
+                            <ul>
+                                <li>Filtro por CBO e competência de maior variação</li>
+                                <li>Contagem total de registros</li>
+                                <li>Análise de distribuição salarial</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3>⚙️ Ferramentas Utilizadas</h3>
+                    <div class="grid-2">
+                        <div>
+                            <h4>Linguagem R</h4>
+                            <ul>
+                                <li>dplyr - Manipulação de dados</li>
+                                <li>ggplot2 - Visualizações</li>
+                                <li>readxl - Leitura de arquivos Excel</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Python</h4>
+                            <ul>
+                                <li>pandas - Análise de dados</li>
+                                <li>numpy - Operações numéricas</li>
+                                <li>matplotlib/seaborn - Gráficos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resumo Executivo -->
+        <section id="resumo" class="tab-content">
+            <div class="section-header">
+                <h2>Resumo Executivo</h2>
+                <p>Principais descobertas e conclusões da análise</p>
+            </div>
+
+            <div class="card summary-card">
+                <div class="card__body">
+                    <h3>🎯 Principais Descobertas</h3>
+                    <div class="findings-grid">
+                        <div class="finding">
+                            <h4>Crescimento Salarial</h4>
+                            <p>Os salários médios para Analistas de Sistemas de Automação mantiveram-se consistentemente acima do salário mínimo, variando entre R$ 4.180,30 e R$ 5.115,45.</p>
+                        </div>
+                        <div class="finding">
+                            <h4>Pico em Julho</h4>
+                            <p>Julho de 2024 apresentou a maior variação percentual (+15,71%), indicando um aquecimento significativo no mercado para esta ocupação.</p>
+                        </div>
+                        <div class="finding">
+                            <h4>Volume de Contratações</h4>
+                            <p>O mês de maior variação salarial coincidiu com 220 registros de movimentação, sugerindo alta demanda por profissionais.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>📈 Conclusões</h3>
+                        <ul>
+                            <li>Mercado aquecido para CBO 212415 em 2024</li>
+                            <li>Valorização profissional evidenciada pelo crescimento salarial</li>
+                            <li>Concentração de oportunidades no meio do ano</li>
+                            <li>88,6% dos registros com salários adequados (acima do mínimo)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__body">
+                        <h3>🚀 Recomendações</h3>
+                        <ul>
+                            <li>Monitorar tendências de crescimento contínuo</li>
+                            <li>Investigar fatores que levaram ao pico de julho</li>
+                            <li>Analisar correlação com demanda por automação</li>
+                            <li>Expandir análise para outros CBOs relacionados</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3>📋 Próximos Passos</h3>
+                    <ol>
+                        <li>Análise comparativa com anos anteriores</li>
+                        <li>Segmentação por região geográfica</li>
+                        <li>Correlação com indicadores econômicos</li>
+                        <li>Projeções para 2025</li>
+                        <li>Análise de outras ocupações correlacionadas</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
